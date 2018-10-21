@@ -14,6 +14,7 @@
     "probot-app"
   ],
   "scripts": {
+    "publish": "node ./node_modules/.bin/pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon",
     "start": "probot run ./index.js",
     "lint": "standard --fix",
@@ -21,6 +22,7 @@
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
+    "pm2": "^3.2.2",
     "probot": "^7.0.0",
     "probot-stale": "^1.1.0"
   },
