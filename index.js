@@ -1,7 +1,7 @@
 const issueMatch = require('./lib/utils.js')
 const defaultConfig = require('./lib/defaultConfig.js')
 
-const issueEvents = ['issues.opened', 'issues.edited', 'issues.reopened']
+const issueEvents = ['issues.opened', 'issues.edited']
 
 module.exports = app => {
   app.on(issueEvents, async context => {
