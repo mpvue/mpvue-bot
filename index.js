@@ -15,7 +15,9 @@ module.exports = app => {
     }
     if (!issueMatch(issueBody, config.issueConfigs)) {
       const issueComment = context.issue({ body: config.comments.closeIssue })
-      context.github.issues.createComment(issueComment)
+      if (context.payload.action === 'created') {
+        context.github.issues.createComment(issueComment)
+      }
       return context.github.issues.edit({
         ...params,
         state: 'closed'
