@@ -5,8 +5,13 @@ const issueEvents = ['issues.opened', 'issues.edited']
 
 module.exports = app => {
   app.on(issueEvents, async context => {
-    const repoConfig = await context.config('issue_template.yml')
-    const config = repoConfig ? repoConfig : defaultConfig
+    let config = {}
+    try {
+      const repoConfig = await context.config('issue_template.yml')
+      config = repoConfig ? repoConfig : defaultConfig
+    } catch (e) {
+      config = defaultConfig
+    }
     const issueBody = context.payload.issue.body
     const params = {
       owner: context.payload.repository.owner.login,
