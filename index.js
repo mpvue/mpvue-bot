@@ -6,7 +6,7 @@ const issueEvents = ['issues.opened', 'issues.edited']
 module.exports = app => {
   app.on(issueEvents, async context => {
     const repoConfig = await context.config('issue_template.yml')
-    const config = Object.assign({}, defaultConfig, repoConfig)
+    const config = repoConfig ? repoConfig : defaultConfig
     const issueBody = context.payload.issue.body
     const params = {
       owner: context.payload.repository.owner.login,
@@ -15,7 +15,6 @@ module.exports = app => {
     }
     if (!issueMatch(issueBody, config.issueConfigs)) {
       const issueComment = context.issue({ body: config.comments.closeIssue })
-      console.log(context.payload.action)
       if (context.payload.action === 'created' || context.payload.action === 'opened') {
         context.github.issues.createComment(issueComment)
       }
