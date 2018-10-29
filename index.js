@@ -8,29 +8,30 @@ module.exports = app => {
     let config = {}
     try {
       const repoConfig = await context.config('issue_template.yml')
-      config = repoConfig ? repoConfig : defaultConfig
+      config = repoConfig ? repoConfig : defaultConfig;
     } catch (e) {
-      config = defaultConfig
+      config = defaultConfig;
     }
-    const issueBody = context.payload.issue.body
+    const issueBody = context.payload.issue.body;
     const params = {
       owner: context.payload.repository.owner.login,
       repo: context.payload.repository.name,
       number: context.payload.issue.number
-    }
-    if (!issueMatch(issueBody, config.issueConfigs)) {
-      const issueComment = context.issue({ body: config.comments.closeIssue })
+    };
+    const { match, closeComments } = issueMatch(issueBody, config.issueConfigs, config.comments);
+    if (!match) {
+      const issueComment = context.issue({ body: closeComments.join('\n') });
       if (context.payload.action === 'created' || context.payload.action === 'opened') {
-        context.github.issues.createComment(issueComment)
+        context.github.issues.createComment(issueComment);
       }
       return context.github.issues.edit({
         ...params,
         state: 'closed'
-      })
+      });
     }
     return context.github.issues.edit({
       ...params,
       state: 'open'
-    })
+    });
   })
 }
